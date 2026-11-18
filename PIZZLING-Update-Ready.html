@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07152f">
+<title>PIZZLING</title>
+<meta name="pizzling-version" content="3.4.2">
+<style>
+:root{--bg:#071329;--panel:#102344;--panel2:#172e55;--line:#29436c;--blue:#087cf0;--text:#f4f8ff;--muted:#a9bbd6;--green:#22d58a;--red:#ff6d7d;--gold:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#061126,#0b1b3a 60%,#071329);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;min-height:100vh}
+header{padding:18px 15px 14px;display:flex;align-items:center;justify-content:space-between;max-width:1100px;margin:auto}.brand{display:flex;align-items:center;gap:11px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#168cff,#0044bd);display:grid;place-items:center;font-size:29px;font-weight:900;font-style:italic}.brand h1{font-size:21px;margin:0}.brand small{color:var(--muted)}
+.wrap{max-width:1100px;margin:auto;padding:0 14px 100px}.hero{background:linear-gradient(120deg,#0757d9,#06358d 65%,#092d75);border:1px solid #287bff;border-radius:23px;padding:18px;box-shadow:0 14px 35px #001b4b88}.heroTop{display:flex;justify-content:space-between;gap:10px;align-items:center}.hero h2{font-size:17px;margin:0 0 4px}.hero p{font-size:13px;color:#d4e5ff;margin:0}.hero-shortcuts{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}.hero-posting-btn{display:inline-flex;align-items:center;gap:5px;border:1px solid #4a8fff;background:#06245c;color:#fff;border-radius:20px;padding:6px 9px;font:inherit;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer}.hero-posting-btn:active{transform:scale(.97)}.balance{font-size:31px;font-weight:850;margin:16px 0 2px}.sub{font-size:12px;color:#d6e7ff}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px}.stat{background:#041e55aa;border:1px solid #ffffff22;border-radius:13px;padding:10px 8px}.stat b{display:block;font-size:15px;overflow-wrap:anywhere}.stat span{font-size:11px;color:#d5e5ff}
+/* PIZZLING 3.2 dashboard refresh */
+.dashboard-block{margin-top:14px}.dashboard-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 11px}.dashboard-title h3{margin:0;font-size:16px}.dashboard-title small{color:var(--muted)}
+.hero{position:relative;overflow:hidden;background:linear-gradient(125deg,#0868f5 0%,#0750c9 58%,#082f83 100%);box-shadow:0 16px 34px #001c5280}.hero:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-80px;bottom:-115px;background:#36a5ff33;pointer-events:none}.heroTop,.balance,.sub,.stats{position:relative;z-index:1}.hero .balance{font-size:clamp(29px,8vw,38px);letter-spacing:.2px}.stats.account-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.account-tile{display:flex;align-items:center;gap:10px;min-width:0;min-height:76px;padding:11px;background:linear-gradient(145deg,#10294d,#0a1d39);border:1px solid #31527e;border-radius:15px;box-shadow:inset 0 1px #ffffff0b}.account-icon{width:39px;height:39px;flex:0 0 39px;border-radius:13px;display:grid;place-items:center;font-size:19px;font-weight:800}.account-tile b{display:block;font-size:15px;overflow-wrap:anywhere}.account-tile span{display:block;color:#b9cbe4;font-size:11px;margin-bottom:3px}.account-tile.cash .account-icon{background:#087c5540;color:#39e49a}.account-tile.bkash .account-icon{background:#c2185b40;color:#ff68ad}.account-tile.nagad .account-icon{background:#e34b1d40;color:#ff956a}.account-tile.bank .account-icon{background:#087cf040;color:#65baff}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dashboard-card{background:linear-gradient(145deg,#10284a,#0b1c36);border:1px solid #294a75;border-radius:17px;padding:14px}.dashboard-card h3{font-size:15px;margin:0 0 12px}.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.quick-action{min-height:74px;border:1px solid #31527e;border-radius:13px;background:#10294d;color:#f5f8ff;font:inherit;font-size:11px;font-weight:650;padding:9px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}.quick-action i{font-style:normal;font-size:21px}.quick-action:active{transform:scale(.97);background:#17427a}.summary-pair{display:grid;grid-template-columns:1fr 1fr;gap:9px}.summary-item{padding:11px;border-radius:13px;background:#0a1c38;border:1px solid #29436c}.summary-item span{display:block;color:#b7c8df;font-size:11px}.summary-item b{display:block;font-size:16px;margin-top:4px;overflow-wrap:anywhere}.summary-item.income b{color:#32df98}.summary-item.expense b{color:#ff7889}.recent-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #263e60}.recent-row:last-child{border-bottom:0}.recent-row strong{font-size:13px;display:block}.recent-row small{font-size:11px;color:var(--muted)}
+@media(max-width:680px){.dashboard-grid{grid-template-columns:1fr}.quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{padding:15px}.account-tile{min-height:72px}}
+.tabs{display:flex;gap:7px;overflow:auto;margin:16px 0 13px;padding-bottom:3px}.tab{border:1px solid var(--line);background:#0c1e3b;color:var(--muted);border-radius:11px;padding:10px 13px;white-space:nowrap;font:inherit;font-size:13px}.tab.active{background:#0968d9;color:white;border-color:#318eff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.card{background:linear-gradient(145deg,#11284a,#0c1d38);border:1px solid var(--line);border-radius:17px;padding:15px;box-shadow:0 8px 24px #0002}.card h3{margin:0 0 12px;font-size:16px}
+label{display:block;color:#c1d0e6;font-size:12px;margin:9px 0 5px}input,select,textarea{width:100%;background:#071832;color:var(--text);border:1px solid #304b73;border-radius:10px;padding:11px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:#2495ff}input[type=file]{font-size:12px;padding:8px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.btn{border:0;background:linear-gradient(100deg,#0782ff,#0757d5);color:white;padding:11px 14px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}.btn.secondary{background:#1b355c;border:1px solid #38577f}.btn.danger{background:#7b2638}.btn.green{background:#087c55}.btn.small{padding:6px 9px;font-size:11px}.btn.full{width:100%;margin-top:12px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.tx{display:flex;justify-content:space-between;gap:9px;padding:11px 0;border-bottom:1px solid #263e60}.tx:last-child{border-bottom:0}.tx strong{display:block;font-size:13px}.tx small{color:var(--muted);font-size:11px}.amount{font-weight:800;white-space:nowrap}.income{color:var(--green)}.expense{color:var(--red)}.list{max-height:520px;overflow:auto}.empty{color:var(--muted);text-align:center;padding:25px 8px;font-size:13px}.notice{background:#0a2446;border:1px solid #28517c;border-radius:11px;padding:10px;color:#c6d8f1;font-size:12px;line-height:1.6;margin-top:11px}.hidden{display:none!important}.pill{font-size:11px;background:#06245c;border:1px solid #4a8fff;padding:6px 9px;border-radius:20px}
+#lockScreen{position:fixed;inset:0;z-index:20;background:radial-gradient(ellipse at top,#123b78,#061126 65%);display:flex;align-items:center;justify-content:center;padding:20px}.lockbox{width:min(390px,100%);background:#102344;border:1px solid #315486;border-radius:23px;padding:24px;box-shadow:0 20px 60px #0008;text-align:center}.lockbox .logo{margin:0 auto 12px}.lockbox h2{margin:5px 0}.lockbox p{color:var(--muted);font-size:13px}.pininput{text-align:center;font-size:25px;letter-spacing:12px}.lockerr{color:#ff9baa;min-height:20px;font-size:12px}
+#profileShortcutAvatar{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid #328cff;background:#071832;display:block}.profile-shortcut{width:54px;height:54px;padding:3px;border:1px solid #315486;border-radius:50%;background:#102344;display:grid;place-items:center;cursor:pointer;color:#fff;font:inherit;font-size:10px}.profile-shortcut-label{display:block;text-align:center}
+.posting-shell{display:block}.posting-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.posting-head h3{margin:0}.posting-count{background:#3b210d;color:#ff9b52;border:1px solid #75401b;border-radius:20px;padding:6px 11px;font-size:12px;font-weight:700}.posting-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 16px}.posting-stat{background:#08265f;border:1px solid #294b83;border-radius:15px;padding:14px}.posting-stat b{display:block;font-size:25px;margin-bottom:5px}.posting-stat span{font-size:12px;color:#d5e5ff}.posting-filters{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 18px}.posting-filter{border:1px solid #38577f;background:#0a1c38;color:var(--muted);border-radius:24px;padding:9px 14px;font:inherit;font-size:13px;cursor:pointer}.posting-filter.active{background:#f4f8ff;color:#102344;border-color:#f4f8ff}.posting-status{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 18px}.posting-status .posting-filter.active{background:#0968d9;color:#fff;border-color:#318eff}.posting-divider{border:0;border-top:1px solid #29436c;margin:18px 0 22px}.posting-item{background:#0a1c38;border:1px solid #29436c;border-radius:15px;padding:14px;margin:10px 0}.posting-meta{font-size:11px;color:var(--muted);margin-top:5px}.posting-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.posting-item-title{font-weight:750;font-size:14px}.posting-amount{font-weight:850;font-size:18px;white-space:nowrap}.posting-item .actions{margin-top:12px}.posting-empty{color:var(--muted);text-align:center;padding:25px 8px;font-size:13px}
+
+/* PIZZLING 3.4 savings and DPS workspace */
+.saving-hub{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.saving-hub-btn{display:flex;align-items:center;gap:12px;text-align:left;min-height:76px;padding:13px;border:1px solid #31527e;border-radius:15px;background:linear-gradient(145deg,#142f55,#0a1d39);color:var(--text);font:inherit;cursor:pointer}
+.saving-hub-btn .hub-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:#087cf033;color:#6bb8ff;font-size:22px;flex:0 0 42px}
+.saving-hub-btn strong{display:block;font-size:14px}.saving-hub-btn small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.saving-hub-btn.active{border-color:#168cff;box-shadow:0 0 0 1px #168cff55;background:linear-gradient(145deg,#123d76,#0b2450)}
+.saving-hub-posting{display:flex;justify-content:flex-end;margin:0 0 13px}
+.saving-hub-posting .saving-hub-btn{width:min(260px,100%);min-height:58px;background:linear-gradient(110deg,#075bca,#073a91)}
+.saving-hub-secondary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 14px}
+.saving-hub-secondary .saving-hub-btn{min-height:58px}
+.saving-panel{margin-bottom:13px}.saving-panel>.card{margin-bottom:12px}
+.dps-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+.dps-kpi{background:#0a1c38;border:1px solid #29436c;border-radius:12px;padding:11px}.dps-kpi small{display:block;color:var(--muted);font-size:11px}.dps-kpi b{display:block;font-size:18px;margin-top:3px}
+.dps-table-wrap{overflow:auto;max-height:560px;border:1px solid #29436c;border-radius:12px;margin-top:10px}
+.dps-table{width:100%;border-collapse:collapse;min-width:490px;font-size:12px}.dps-table th,.dps-table td{padding:10px 9px;border-bottom:1px solid #29436c;text-align:left;white-space:nowrap}.dps-table th{position:sticky;top:0;background:#102b50;color:#d9eaff;z-index:1}.dps-table td:last-child,.dps-table th:last-child{text-align:right}.dps-table tr:last-child td{border-bottom:0}
+.dps-account-note{background:#0a2446;border:1px solid #28517c;border-radius:10px;padding:10px;margin-top:9px;font-size:12px;color:#d4e5ff}
+@media(max-width:520px){.saving-hub{gap:7px}.saving-hub-btn{padding:10px;gap:8px}.saving-hub-btn .hub-icon{width:35px;height:35px;flex-basis:35px;font-size:18px}.saving-hub-btn strong{font-size:12px}.saving-hub-secondary{gap:7px}}
+
+footer{text-align:center;color:#8298b8;font-size:11px;padding:22px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.balance{font-size:28px}.hero{padding:15px}}
+@media print{.tabs,.no-print,form,footer,#lockScreen{display:none!important}body{background:white;color:#111}.card,.hero{background:white;color:#111;border:1px solid #aaa;box-shadow:none}.hero p,.sub,.stat span,.tx small{color:#444}.wrap{max-width:none}.grid{display:block}.card{margin-bottom:12px}}
+</style>
+
+<script>
+(function(){
+  const VERSION = document.querySelector('meta[name="pizzling-version"]')?.content || '0.0.0';
+  const STORE = 'pizzling_installed_update_html_v1';
+  function parts(v){ return String(v||'0').split('.').map(x=>parseInt(x,10)||0); }
+  function newer(a,b){
+    const x=parts(a), y=parts(b);
+    for(let i=0;i<Math.max(x.length,y.length);i++){
+      if((x[i]||0)>(y[i]||0)) return true;
+      if((x[i]||0)<(y[i]||0)) return false;
+    }
+    return false;
+  }
+  try {
+    const saved = localStorage.getItem(STORE);
+    if(saved){
+      const pkg = JSON.parse(saved);
+      if(pkg && pkg.html && newer(pkg.version, VERSION)){
+        document.open(); document.write(pkg.html); document.close();
+      }
+    }
+  } catch(e) {}
+})();
+</script>
+
+</head>
+<body>
+<div id="lockScreen">
+ <div class="lockbox"><div class="logo">P</div><h2>PIZZLING</h2><p id="lockMessage">আপনার ব্যক্তিগত হিসাব সুরক্ষিত রাখতে PIN দিন।</p>
+ <form id="pinForm"><input id="pinInput" class="pininput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" minlength="4" placeholder="••••" required autocomplete="off"><button class="btn full" id="pinButton">প্রবেশ করুন</button></form>
+ <div class="lockerr" id="pinError"></div><p class="mini">PIN এই ডিভাইসের ব্রাউজারে সংরক্ষিত থাকবে।</p>
+ </div>
+</div>
+<header><div class="brand"><div class="logo" id="headerAvatar">P</div><div><h1>PIZZLING</h1><small>Manage. Save. Grow.</small></div></div><button class="profile-shortcut no-print" type="button" onclick="showTab('settings')" aria-label="প্রোফাইল ও সেটিংস খুলুন"><span id="profileShortcutAvatar" class="profile-shortcut-label">P</span></button></header>
+<main class="wrap" id="app">
+ <section class="hero"><div class="heroTop"><div><h2 id="welcome">আমার হিসাব</h2><p>আপনার টাকা, এক জায়গায়</p></div><div class="hero-shortcuts"><span class="pill">● ব্যক্তিগত</span><button type="button" class="hero-posting-btn" onclick="showTab('posting')">Posting <span id="pendingHeroCount">০</span></button></div></div><div class="balance" id="totalBalance">৳ ০</div><div class="sub">সর্বমোট বর্তমান ব্যালেন্স</div><div class="stats account-grid"><div class="account-tile cash"><div class="account-icon">▣</div><div><span>Cash</span><b id="cashBalance">৳ ০</b></div></div><div class="account-tile bkash"><div class="account-icon">b</div><div><span>bKash</span><b id="bkashBalance">৳ ০</b></div></div><div class="account-tile nagad"><div class="account-icon">ন</div><div><span>Nagad</span><b id="nagadBalance">৳ ০</b></div></div><div class="account-tile bank"><div class="account-icon">▥</div><div><span>Bank</span><b id="bankBalance">৳ ০</b></div></div></div></section>
+ <nav class="tabs no-print"><button class="tab active" data-tab="home">হোম</button><button class="tab" data-tab="transactions">লেনদেন</button><button class="tab" data-tab="debts">দেনা-পাওনা</button><button class="tab" data-tab="savings">সঞ্চয় / DPS</button><button class="tab" data-tab="reports">রিপোর্ট</button><button class="tab" data-tab="settings">সেটিংস</button></nav>
+ <section id="home" class="page">
+  <div class="dashboard-block dashboard-grid">
+   <div class="dashboard-card"><h3>এই মাসের সারাংশ</h3><div class="summary-pair"><div class="summary-item income"><span>মোট জমা</span><b id="dashIncome">৳ ০</b></div><div class="summary-item expense"><span>মোট খরচ</span><b id="dashExpense">৳ ০</b></div><div class="summary-item"><span>মোট দেনা</span><b id="dashDebt">৳ ০</b></div><div class="summary-item"><span>মোট পাওনা</span><b id="dashReceivable">৳ ০</b></div></div></div>
+   <div class="dashboard-card"><div class="dashboard-title"><h3>দ্রুত কাজ</h3><small>সব কাজ এক জায়গায়</small></div><div class="quick-grid">
+    <button class="quick-action" onclick="showTab('add')"><i>↕</i>জমা / খরচ</button>
+    <button class="quick-action" onclick="showTab('transactions')"><i>▤</i>লেনদেন</button>
+    <button class="quick-action" onclick="showTab('debts')"><i>🤝</i>দেনা-পাওনা</button>
+    <button class="quick-action" onclick="showTab('savings')"><i>🐷</i>সঞ্চয় / DPS</button>
+    <button class="quick-action" onclick="showTab('posting')"><i>☷</i>Posting</button>
+    <button class="quick-action" onclick="showTab('reports')"><i>▥</i>রিপোর্ট / Trash</button>
+    <button class="quick-action" onclick="backup()"><i>⬇</i>Backup</button>
+    <button class="quick-action" onclick="showTab('settings')"><i>⚙</i>সেটিংস</button>
+    <button class="quick-action" onclick="showTab('settings');document.getElementById('pizUpdateFile')?.scrollIntoView({behavior:'smooth',block:'center'})"><i>⟳</i>আপডেট</button>
+   </div></div>
+  </div>
+  <div class="dashboard-block dashboard-card"><div class="dashboard-title"><h3>সাম্প্রতিক লেনদেন</h3><button class="btn secondary small" onclick="showTab('transactions')">সব দেখুন →</button></div><div id="dashboardRecent"><div class="empty">এখনো কোনো লেনদেন নেই।</div></div></div>
+ </section>
+ <section id="transactions" class="page hidden section"><div class="grid"><div class="card"><h3 id="txFormTitle">নতুন লেনদেন যোগ করুন</h3><form id="txForm"><input id="txId" type="hidden"><div class="row"><div><label>ধরন</label><select id="txType"><option value="income">টাকা জমা (Credit)</option><option value="expense">টাকা খরচ (Debit)</option></select></div><div><label>অ্যাকাউন্ট</label><select id="txAccount"><option>Cash</option><option>bKash</option><option>Nagad</option><option>Bank</option><option>Rocket</option></select></div></div><label>পরিমাণ (৳)</label><input id="txAmount" type="number" min="0.01" step="0.01" required><div class="row"><div><label>ক্যাটাগরি</label><select id="txCategory"><option>Personal</option><option>Family</option><option>Food</option><option>Transport</option><option>Salary</option><option>Transfer</option><option>Other</option></select></div><div><label>তারিখ</label><input id="txDate" type="date" required></div></div><label>বিবরণ</label><input id="txNote" maxlength="120" placeholder="যেমন: বেতন / বাজার"><label>রসিদের ছবি (ঐচ্ছিক)</label><input id="txReceipt" type="file" accept="image/*"><div class="actions"><button class="btn" id="txSave">সংরক্ষণ করুন</button><button class="btn secondary hidden" type="button" id="txCancel" onclick="resetTxForm()">বাতিল</button></div></form><div class="notice">সম্পাদনা করলে আগের লেনদেনের তথ্য আপডেট হবে, নতুন লেনদেন তৈরি হবে না।</div></div><div class="card"><h3>লেনদেনের তালিকা</h3><input id="txSearch" placeholder="বিবরণ, মাধ্যম বা তারিখ দিয়ে খুঁজুন"><div id="txList" class="list"></div></div></div></section>
+ <section id="posting" class="page hidden section"><div class="card posting-shell"><div class="posting-head"><h3>PIZZLING – Posting</h3><span class="posting-count">Pending: <b id="pendingTotal">০</b></span></div><div class="posting-stats"><div class="posting-stat"><b id="pendingStat">০</b><span>সব Pending</span></div><div class="posting-stat"><b id="approvedTotal">০</b><span>Approved</span></div></div><div class="posting-filters" id="postingCategoryFilters"><button class="posting-filter active" data-filter="all" onclick="setPostingCategory('all')">সব</button><button class="posting-filter" data-filter="income" onclick="setPostingCategory('income')">জমা</button><button class="posting-filter" data-filter="expense" onclick="setPostingCategory('expense')">খরচ</button><button class="posting-filter" data-filter="debt" onclick="setPostingCategory('debt')">দেনা</button><button class="posting-filter" data-filter="receivable" onclick="setPostingCategory('receivable')">পাওনা</button><button class="posting-filter" data-filter="saving" onclick="setPostingCategory('saving')">DPS / সঞ্চয়</button></div><div class="posting-status"><button class="posting-filter active" data-status="pending" onclick="setPostingStatus('pending')">Pending</button><button class="posting-filter" data-status="approved" onclick="setPostingStatus('approved')">Approved</button><button class="posting-filter" data-status="rejected" onclick="setPostingStatus('rejected')">Rejected</button><button class="posting-filter" data-status="all" onclick="setPostingStatus('all')">সব অবস্থা</button></div><hr class="posting-divider"><h3 id="postingListTitle">Pending তালিকা</h3><div id="postingList"></div><div class="notice">আপনি Approve না করা পর্যন্ত কোনো Pending কাজ Dashboard-এর ব্যালেন্স বা মূল হিসাবে যোগ হবে না।</div></div></section>
+ <section id="add" class="page hidden"></section>
+ <section id="debts" class="page hidden section"><div class="grid"><div class="card"><h3 id="debtFormTitle">দেনা-পাওনা যোগ করুন</h3><form id="debtForm"><input id="debtId" type="hidden"><label>ব্যক্তির নাম</label><input id="debtPerson" required><div class="row"><div><label>ধরন</label><select id="debtType"><option value="given">আমি টাকা দিয়েছি (পাওনা)</option><option value="taken">আমি টাকা নিয়েছি (দেনা)</option></select></div><div><label>পরিমাণ (৳)</label><input id="debtAmount" type="number" min="0.01" step="0.01" required></div></div><label>তারিখ</label><input id="debtDate" type="date" required><label>বিবরণ</label><input id="debtNote"><div class="actions"><button class="btn">সংরক্ষণ করুন</button><button class="btn secondary hidden" type="button" id="debtCancel" onclick="resetDebtForm()">বাতিল</button></div></form></div><div class="card"><h3>দেনা-পাওনার তালিকা</h3><div id="debtList" class="list"></div></div></div></section>
+ <section id="savings" class="page hidden section">
+  <div class="saving-hub">
+   <button type="button" class="saving-hub-btn active" data-saving-view="savingSetup" onclick="showSavingView('savingSetup')"><span class="hub-icon">🐷</span><span><strong>সঞ্চয়</strong><small>সঞ্চয়ের সেটিংস</small></span></button>
+   <button type="button" class="saving-hub-btn" data-saving-view="dpsSetup" onclick="showSavingView('dpsSetup')"><span class="hub-icon">📅</span><span><strong>DPS সেট করুন</strong><small>নতুন DPS তৈরি</small></span></button>
+  </div>
+  <div class="saving-hub-posting"><button type="button" class="saving-hub-btn" data-saving-view="dpsPosting" onclick="showSavingView('dpsPosting')"><span class="hub-icon">↗</span><span><strong>DPS Posting</strong><small>কিস্তি জমা দিন</small></span></button></div>
+  <div class="saving-hub-secondary">
+   <button type="button" class="saving-hub-btn" data-saving-view="dpsList" onclick="showSavingView('dpsList')"><span class="hub-icon">📋</span><span><strong>DPS-এর তালিকা</strong><small>সব DPS দেখুন</small></span></button>
+   <button type="button" class="saving-hub-btn" data-saving-view="dpsLedger" onclick="showSavingView('dpsLedger')"><span class="hub-icon">▦</span><span><strong>কিস্তির হিসাব</strong><small>Excel-এর মতো তালিকা</small></span></button>
+  </div>
+  <div id="savingSetupPanel" class="saving-panel">
+   <div class="card"><h3 id="savingFormTitle">নতুন সঞ্চয় সেট করুন</h3><form id="savingForm"><input id="savingId" type="hidden">
+    <label>সঞ্চয়ের নাম</label><input id="savingName" required placeholder="যেমন: ব্যক্তিগত সঞ্চয়">
+    <label>মেয়াদ</label><select id="savingDuration" required><option value="">মেয়াদ সিলেক্ট করুন</option><option value="6m">৬ মাস</option><option value="1y">১ বছর</option><option value="18m">১ বছর ৬ মাস</option><option value="2y">২ বছর</option><option value="3y">৩ বছর</option><option value="4y">৪ বছর</option><option value="5y">৫ বছর</option><option value="6y">৬ বছর</option><option value="7y">৭ বছর</option><option value="8y">৮ বছর</option><option value="9y">৯ বছর</option><option value="10y">১০ বছর</option></select>
+    <div class="row"><div><label>জমার নিয়ম</label><select id="savingFrequency" required><option value="weekly">সাপ্তাহিক</option><option value="monthly">মাসিক</option></select></div><div><label>প্রতি জমা (৳)</label><input id="savingInstallment" type="number" min="0.01" step="0.01" required placeholder="যেমন: ৫০০"></div></div>
+    <div class="actions"><button class="btn">সঞ্চয় সংরক্ষণ করুন</button><button class="btn secondary hidden" type="button" id="savingCancel" onclick="resetSavingForm()">বাতিল</button></div></form>
+    <div class="notice">সঞ্চয়ের বিস্তারিত নিয়ম পরবর্তী আপডেটে আরও উন্নত করা যাবে।</div>
+   </div>
+   <div class="card"><h3>সঞ্চয়ের তালিকা</h3><div id="savingList" class="list"></div></div>
+  </div>
+  <div id="dpsSetupPanel" class="saving-panel hidden"><div class="card"><h3 id="dpsFormTitle">নতুন DPS সেট করুন</h3>
+   <form id="dpsForm"><input id="dpsId" type="hidden">
+    <label>DPS-এর নাম</label><input id="dpsName" required maxlength="60" placeholder="যেমন: আমার মাসিক DPS">
+    <label>মেয়াদ</label><select id="dpsDuration" required><option value="">মেয়াদ সিলেক্ট করুন</option><option value="6m">৬ মাস</option><option value="1y">১ বছর</option><option value="18m">১ বছর ৬ মাস</option><option value="2y">২ বছর</option><option value="3y">৩ বছর</option><option value="4y">৪ বছর</option><option value="5y">৫ বছর</option><option value="6y">৬ বছর</option><option value="7y">৭ বছর</option><option value="8y">৮ বছর</option><option value="9y">৯ বছর</option><option value="10y">১০ বছর</option></select>
+    <div class="row"><div><label>জমার নিয়ম</label><select id="dpsFrequency" required><option value="weekly">সাপ্তাহিক</option><option value="monthly">মাসিক</option></select></div><div><label>প্রতি কিস্তিতে জমা (৳)</label><input id="dpsInstallment" type="number" min="0.01" step="0.01" required placeholder="যেমন: ৫০০"></div></div>
+    <label>বার্ষিক লাভের হার (%)</label><input id="dpsRate" type="number" min="0" max="100" step="0.01" required placeholder="যেমন: ১২ বা ২৪">
+    <label>যে অ্যাকাউন্ট থেকে জমা হবে</label><select id="dpsAccount" required><option>Cash</option><option>bKash</option><option>Nagad</option><option>Bank</option><option>Rocket</option></select>
+    <div class="actions"><button class="btn">DPS সেটিংস সংরক্ষণ করুন</button><button class="btn secondary hidden" type="button" id="dpsCancel" onclick="resetDpsForm()">বাতিল</button></div>
+   </form><div class="notice">DPS একবার সেট করলেই অ্যাকাউন্ট, কিস্তির নিয়ম ও বার্ষিক লাভের হার সংরক্ষিত থাকবে। Posting-এর সময় অ্যাকাউন্ট আবার নির্বাচন করতে হবে না। লাভের হিসাব আনুমানিক সরল সুদভিত্তিক; প্রকৃত ব্যাংক/প্রতিষ্ঠানের মুনাফা আলাদা হতে পারে।</div>
+  </div></div>
+  <div id="dpsPostingPanel" class="saving-panel hidden"><div class="card"><h3>DPS Posting</h3><form id="savingPostForm"><label>যে DPS-এ জমা দেবেন</label><select id="savingPostSelect" required><option value="">DPS সিলেক্ট করুন</option></select>
+    <div class="row"><div><label>জমার পরিমাণ (৳)</label><input id="savingPostAmount" type="number" min="0.01" step="0.01" required></div><div><label>জমার তারিখ</label><input id="savingPostDate" type="date" required></div></div>
+    <div id="dpsPostingAccountInfo" class="dps-account-note">DPS নির্বাচন করলে নির্ধারিত অ্যাকাউন্ট এখানে দেখা যাবে।</div>
+    <button class="btn full">Posting দিন</button></form>
+    <div class="notice">Posting প্রথমে Pending হবে। Posting মেনু থেকে Approve করলে নির্ধারিত অ্যাকাউন্টের ব্যালেন্স থেকে টাকা কাটা হবে এবং কিস্তির তালিকায় যুক্ত হবে।</div>
+   </div></div>
+  <div id="dpsListPanel" class="saving-panel hidden"><div class="card"><h3>DPS-এর তালিকা</h3><div id="dpsList" class="list"></div></div></div>
+  <div id="dpsLedgerPanel" class="saving-panel hidden"><div class="card"><h3>DPS কিস্তির হিসাব</h3><label>DPS নির্বাচন করুন</label><select id="dpsLedgerSelect"><option value="">DPS সিলেক্ট করুন</option></select><div id="dpsLedgerSummary"></div><div id="dpsLedgerTable"></div><div class="actions no-print"><button class="btn secondary" type="button" onclick="exportDpsLedgerCSV()">Excel/CSV ডাউনলোড</button></div></div></div>
+  <div class="card"><h3>সাম্প্রতিক DPS Posting</h3><div id="savingPostList" class="list"></div></div>
+ </section>
+ <section id="reports" class="page hidden section"><div class="grid"><div class="card"><h3>আয়-ব্যয়ের সারাংশ</h3><div id="reportSummary"></div><div class="actions no-print"><button class="btn secondary" onclick="window.print()">PDF / Print</button><button class="btn secondary" onclick="exportCSV()">CSV ডাউনলোড</button></div></div><div class="card"><h3>মুছে ফেলা তথ্য (Trash)</h3><p class="mini">এখান থেকে ভুল করে মুছে ফেলা তথ্য Restore করতে পারবেন।</p><div id="trashList" class="list"></div></div></div></section>
+ <section id="settings" class="page hidden section"><div class="grid"><div class="card"><h3>প্রোফাইল</h3><div style="display:flex;align-items:center;gap:14px;margin:8px 0 14px"><img id="profilePreview" alt="প্রোফাইল ছবি" src="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;border:2px solid #328cff;background:#0a1c38;display:none"><div id="profilePlaceholder" class="logo" style="width:76px;height:76px;border-radius:50%;font-size:34px">P</div><div><b id="profileDisplayName">PIZZLING</b><div class="mini">আপনার প্রোফাইল ছবি</div></div></div><label>প্রোফাইল ছবি পরিবর্তন</label><input id="profilePhotoInput" type="file" accept="image/*"><div class="actions"><button class="btn secondary" type="button" onclick="saveProfilePhoto()">ছবি সংরক্ষণ</button><button class="btn danger" type="button" onclick="removeProfilePhoto()">ছবি সরান</button></div><label>আপনার নাম</label><input id="userName" maxlength="40" placeholder="আপনার নাম"><button class="btn full" onclick="saveName()">নাম সংরক্ষণ</button><hr style="border-color:#29436c;margin:17px 0"><div class="actions"><button class="btn secondary" type="button" onclick="lockApp()">🔒 অ্যাপ লক করুন</button></div><h3>PIN নিরাপত্তা</h3><h3>PIN পরিবর্তন</h3><form id="changePinForm"><label>বর্তমান PIN</label><input id="oldPin" type="password" inputmode="numeric" maxlength="6" minlength="4" required><label>নতুন PIN (৪–৬ সংখ্যা)</label><input id="newPin" type="password" inputmode="numeric" maxlength="6" minlength="4" required><button class="btn full">PIN পরিবর্তন করুন</button></form></div><div class="card"><h3>ডেটা ব্যাকআপ</h3><p class="mini">ডেটা শুধু এই ফোনের ব্রাউজারে থাকবে। নিয়মিত ব্যাকআপ ডাউনলোড করে রাখুন।</p><div class="actions"><button class="btn secondary" onclick="backup()">JSON ব্যাকআপ</button><button class="btn secondary" onclick="exportCSV()">CSV এক্সপোর্ট</button></div><label>ব্যাকআপ ফাইল থেকে Restore</label><input type="file" accept=".json,application/json" onchange="restoreBackup(event)"><div class="notice">PIN লকটি অ্যাপের প্রবেশ নিয়ন্ত্রণ করে; এটি ব্যাংক-স্তরের এনক্রিপশন নয়। ফোন/ব্রাউজারের ডেটা ক্লিয়ার করলে ব্যাকআপ ছাড়া তথ্য ফেরত পাওয়া যাবে না।</div><button class="btn danger full" onclick="clearAll()">সব ডেটা মুছুন</button></div>
+<div class="card"><h3>App Update Manager</h3>
+<p class="mini">নতুন PIZZLING আপডেট ফাইল এখানে নির্বাচন করে ইনস্টল করুন। আপডেটের আগে আপনার হিসাব ও PIN-এর ব্যাকআপ তৈরি হবে।</p>
+<div class="notice">বর্তমান সংস্করণ: <b id="pizCurrentVersion">3.4.2</b><br>শুধু PIZZLING-এর জন্য তৈরি বিশ্বস্ত .piz বা .html আপডেট ফাইল ব্যবহার করবেন।</div>
+<label>আপডেট ফাইল নির্বাচন</label>
+<input id="pizUpdateFile" type="file" accept=".piz,.html,text/html,application/json">
+<div id="pizUpdateInfo" class="notice">এখনো কোনো আপডেট ফাইল নির্বাচন করা হয়নি।</div>
+<button class="btn full" type="button" onclick="installPizzlingUpdate()">আপডেট যাচাই ও ইনস্টল করুন</button>
+<button class="btn secondary full" type="button" onclick="removePizzlingUpdate()">ইনস্টল করা আপডেট সরান</button>
+<div class="notice">ইনস্টল করার পর অ্যাপ রিলোড হবে। ভবিষ্যতে এই একই মূল PIZZLING ফাইল খুললেও সংরক্ষিত নতুন সংস্করণ চালু হবে। ব্রাউজারের ডেটা ক্লিয়ার করলে ইনস্টল করা আপডেট মুছে যেতে পারে—তাই Backup রাখবেন।</div>
+</div>
+</div></section>
+ <footer>PIZZLING</footer>
+</main>
+<script>
+const KEY='pizzling_local_v2',PINKEY='pizzling_pin_v2';
+const emptyData=()=>({name:'PIZZLING',profilePhoto:'',tx:[],debts:[],savings:[],trash:[],pending:[],postingHistory:[]});
+let data=readData(),pinHash=localStorage.getItem(PINKEY)||'';data.pending=data.pending||[];data.postingHistory=data.postingHistory||[];data.savings=(data.savings||[]).map(s=>({...s,type:s.type||'dps',duration:s.duration||'',frequency:s.frequency||'monthly',installment:Number(s.installment||0),rate:Number(s.rate||0),account:s.account||s.posts?.[0]?.account||'Cash',startDate:s.startDate||today(),paid:Number(s.paid||0),posts:s.posts||[]}));
+function readData(){try{let d=JSON.parse(localStorage.getItem(KEY));return {...emptyData(),...(d||{})}}catch(e){return emptyData()}}
+function persist(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function money(n){return '৳ '+Number(n||0).toLocaleString('en-BD',{maximumFractionDigits:2})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function today(){let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function digest(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16)}
+function setupLock(){let msg=document.getElementById('lockMessage'),btn=document.getElementById('pinButton');if(!pinHash){msg.textContent='প্রথমবার ব্যবহারের জন্য ৪–৬ সংখ্যার একটি PIN তৈরি করুন।';btn.textContent='PIN তৈরি করুন'}else{msg.textContent='আপনার PIZZLING অ্যাপে প্রবেশ করতে PIN দিন।';btn.textContent='প্রবেশ করুন'}}
+document.getElementById('pinForm').addEventListener('submit',e=>{e.preventDefault();let p=document.getElementById('pinInput').value,err=document.getElementById('pinError');if(!pinHash){if(!/^[0-9]{4,6}$/.test(p)){err.textContent='৪ থেকে ৬ সংখ্যার PIN দিন।';return}pinHash=digest('PIZZLING:'+p);localStorage.setItem(PINKEY,pinHash);unlock()}else if(digest('PIZZLING:'+p)===pinHash){unlock()}else{err.textContent='PIN সঠিক হয়নি। আবার চেষ্টা করুন।';document.getElementById('pinInput').value=''}});
+function unlock(){document.getElementById('lockScreen').classList.add('hidden');document.getElementById('pinInput').value='';document.getElementById('pinError').textContent='';render()}
+function lockApp(){document.getElementById('lockScreen').classList.remove('hidden');setupLock()}
+function showTab(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('hidden',x.id!==id));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));if(id==='savings'&&typeof showSavingView==='function')showSavingView('dpsSetup');window.scrollTo({top:0,behavior:'smooth'});render()}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
+function balances(){let b={Cash:0,bKash:0,Nagad:0,Bank:0,Rocket:0};data.tx.forEach(t=>b[t.account]=(b[t.account]||0)+(t.type==='income'?t.amount:-t.amount));return b}
+function txHtml(t){let inc=t.type==='income';return `<div class="tx"><div style="min-width:0"><strong>${esc(t.note||(inc?'টাকা জমা':'টাকা খরচ'))}</strong><small>${esc(t.date)} • ${esc(t.account)} • ${esc(t.category)}</small>${t.receipt?`<br><a href="${t.receipt}" target="_blank" style="color:#66baff;font-size:11px">রসিদ দেখুন</a>`:''}<div class="actions no-print"><button class="btn secondary small" onclick="editTx('${t.id}')">Edit</button><button class="btn danger small" onclick="softDelete('tx','${t.id}')">Delete</button></div></div><div class="amount ${inc?'income':'expense'}">${inc?'+':'−'}${money(t.amount)}</div></div>`}
+function render(){let b=balances(),shown=Object.fromEntries(Object.entries(b).map(([k,v])=>[k,Math.max(0,v)])),sum=Object.values(shown).reduce((a,v)=>a+v,0);document.getElementById('welcome').textContent=data.name||'আমার হিসাব';document.getElementById('totalBalance').textContent=money(sum);['Cash','bKash','Nagad','Bank'].forEach(a=>document.getElementById(({Cash:'cashBalance',bKash:'bkashBalance',Nagad:'nagadBalance',Bank:'bankBalance'})[a]).textContent=money(shown[a]));let sorted=[...data.tx].sort((a,b)=>b.date.localeCompare(a.date)||b.created-a.created);let income=data.tx.filter(t=>t.type==='income').reduce((n,t)=>n+t.amount,0),expense=data.tx.filter(t=>t.type==='expense').reduce((n,t)=>n+t.amount,0),debt=data.debts.filter(d=>d.type!=='given').reduce((n,d)=>n+Math.max(0,Number(d.amount||0)-Number(d.paid||0)),0),receivable=data.debts.filter(d=>d.type==='given').reduce((n,d)=>n+Math.max(0,Number(d.amount||0)-Number(d.paid||0)),0);document.getElementById('dashIncome').textContent=money(income);document.getElementById('dashExpense').textContent=money(expense);document.getElementById('dashDebt').textContent=money(debt);document.getElementById('dashReceivable').textContent=money(receivable);document.getElementById('txList').innerHTML=sorted.map(txHtml).join('')||'<div class="empty">কোনো লেনদেন নেই।</div>';let recent=sorted.slice(0,4);document.getElementById('dashboardRecent').innerHTML=recent.map(t=>`<div class="recent-row"><div><strong>${esc(t.note||(t.type==='income'?'টাকা জমা':'টাকা খরচ'))}</strong><small>${esc(t.date)} • ${esc(t.account)}</small></div><b class="amount ${t.type==='income'?'income':'expense'}">${t.type==='income'?'+':'−'}${money(t.amount)}</b></div>`).join('')||'<div class="empty">এখনো কোনো লেনদেন নেই।</div>';document.getElementById('debtList').innerHTML=data.debts.map(d=>`<div class="tx"><div><strong>${esc(d.person)} — ${d.type==='given'?'পাওনা':'দেনা'}</strong><small>${esc(d.date)} • ${esc(d.note)}</small><div class="actions no-print"><button class="btn secondary small" onclick="editDebt('${d.id}')">Edit</button><button class="btn secondary small" onclick="repay('${d.id}')">পরিশোধ যোগ</button><button class="btn danger small" onclick="softDelete('debts','${d.id}')">Delete</button></div></div><b>${money(d.amount)}<small style="display:block">বাকি ${money(d.amount-d.paid)}</small></b></div>`).join('')||'<div class="empty">কোনো দেনা-পাওনা নেই।</div>';renderSavingsUI();document.getElementById('userName').value=data.name||'';document.getElementById('profileDisplayName').textContent=data.name||'PIZZLING';let photo=data.profilePhoto||'';let preview=document.getElementById('profilePreview'),placeholder=document.getElementById('profilePlaceholder'),headerAvatar=document.getElementById('headerAvatar'),shortcutAvatar=document.getElementById('profileShortcutAvatar');if(photo){preview.src=photo;preview.style.display='block';placeholder.style.display='none';headerAvatar.innerHTML=`<img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;shortcutAvatar.innerHTML=`<img src="${photo}" alt="প্রোফাইল" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`}else{preview.removeAttribute('src');preview.style.display='none';placeholder.style.display='grid';headerAvatar.textContent='P';shortcutAvatar.textContent='P'}renderReports();renderPosting()}
+function resetTxForm(){
+  document.getElementById('txForm').reset();
+  document.getElementById('txId').value='';
+  document.getElementById('savingPostDate').value=today();
+  document.getElementById('txDate').value=today();
+  document.getElementById('txFormTitle').textContent='নতুন লেনদেন যোগ করুন';
+  document.getElementById('txSave').textContent='সংরক্ষণ করুন';
+  document.getElementById('txCancel').classList.add('hidden');
+}
+
+// PIZZLING Update Manager — initialized globally after the page elements exist.
+const PIZZLING_VERSION = '3.4.2';
+const PIZZLING_UPDATE_STORE = 'pizzling_installed_update_html_v1';
+let selectedPizzlingUpdate = null;
+
+(function initPizzlingUpdateManager(){
+  const v=document.getElementById('pizCurrentVersion');
+  if(v) v.textContent=PIZZLING_VERSION;
+  const f=document.getElementById('pizUpdateFile');
+  const info=document.getElementById('pizUpdateInfo');
+  if(!f || !info) return;
+
+  f.addEventListener('change', async ()=>{
+    selectedPizzlingUpdate=null;
+    const file=f.files && f.files[0];
+    if(!file){
+      info.textContent='কোনো ফাইল নির্বাচন করা হয়নি।';
+      return;
+    }
+    info.textContent='ফাইল পড়া হচ্ছে...';
+    try{
+      const raw=await file.text();
+      let appHtml=raw, version='';
+      if(file.name.toLowerCase().endsWith('.piz')){
+        const pkg=JSON.parse(raw);
+        if(pkg.format!=='PIZZLING_UPDATE' || typeof pkg.appHtml!=='string' || !pkg.version){
+          throw new Error('এটি সঠিক PIZZLING আপডেট প্যাকেজ নয়।');
+        }
+        appHtml=pkg.appHtml;
+        version=String(pkg.version);
+      } else {
+        const m=appHtml.match(/<meta\s+name=["']pizzling-version["']\s+content=["']([^"']+)["']/i);
+        version=m?m[1]:'';
+      }
+      if(!/^<!doctype html/i.test(appHtml.trim()) ||
+         !/<title>\s*PIZZLING\s*<\/title>/i.test(appHtml) ||
+         !/pizzling-version/i.test(appHtml)){
+        throw new Error('ফাইলটি PIZZLING-এর বৈধ HTML আপডেট নয়।');
+      }
+      if(!version) throw new Error('আপডেট ফাইলে Version পাওয়া যায়নি।');
+      const htmlVersionMatch=appHtml.match(/<meta\s+name=["']pizzling-version["']\s+content=["']([^"']+)["']/i);
+      const htmlVersion=htmlVersionMatch?htmlVersionMatch[1]:'';
+      if(!htmlVersion || htmlVersion!==version){
+        throw new Error('.piz প্যাকেটের Version এবং HTML-এর Version এক নয়।');
+      }
+      selectedPizzlingUpdate={html:appHtml,version,fileName:file.name};
+      info.innerHTML='<b>আপডেট ফাইল পাওয়া গেছে</b><br>ফাইল: '+esc(file.name)+
+        '<br>নতুন সংস্করণ: '+esc(version)+'<br>এখন “আপডেট যাচাই ও ইনস্টল করুন” চাপুন।';
+    }catch(e){
+      info.textContent='আপডেট যাচাই করা যায়নি: '+e.message;
+    }
+  });
+})();
+
+function installPizzlingUpdate(){
+  if(!selectedPizzlingUpdate){
+    alert('আগে একটি বৈধ PIZZLING আপডেট ফাইল নির্বাচন করুন।');
+    return;
+  }
+  const cur=PIZZLING_VERSION, next=selectedPizzlingUpdate.version;
+  const nums=v=>String(v).split('.').map(x=>parseInt(x,10)||0);
+  const newer=(a,b)=>{
+    const x=nums(a),y=nums(b);
+    for(let i=0;i<Math.max(x.length,y.length);i++){
+      if((x[i]||0)>(y[i]||0)) return true;
+      if((x[i]||0)<(y[i]||0)) return false;
+    }
+    return false;
+  };
+  if(!newer(next,cur)){
+    alert('নতুন আপডেটের Version বর্তমান সংস্করণের চেয়ে বড় হতে হবে। বর্তমান: '+cur+' | ফাইল: '+next);
+    return;
+  }
+  if(!confirm('PIZZLING '+next+' ইনস্টল করবেন? আগে আপনার হিসাব ও PIN-এর Backup তৈরি হবে।')) return;
+  try{
+    const autoBackup={
+      version:cur,
+      savedAt:new Date().toISOString(),
+      data:data,
+      pinHash:localStorage.getItem(PINKEY)||''
+    };
+    localStorage.setItem('pizzling_auto_backup_v1',JSON.stringify(autoBackup));
+    localStorage.setItem(PIZZLING_UPDATE_STORE,JSON.stringify({
+      version:next,
+      html:selectedPizzlingUpdate.html,
+      installedAt:new Date().toISOString()
+    }));
+    alert('আপডেট ইনস্টল হয়েছে। PIZZLING এখন নতুন সংস্করণে চালু হচ্ছে।');
+    document.open();
+    document.write(selectedPizzlingUpdate.html);
+    document.close();
+  }catch(e){
+    alert('আপডেট সংরক্ষণ করা যায়নি। ফোনে জায়গা বা Browser Storage পরীক্ষা করুন। আপনার মূল হিসাব পরিবর্তন করা হয়নি.');
+  }
+}
+function removePizzlingUpdate(){
+  if(!confirm('ইনস্টল করা আপডেট সরিয়ে এই ফাইলে থাকা মূল সংস্করণ চালু করবেন?')) return;
+  localStorage.removeItem(PIZZLING_UPDATE_STORE);
+  alert('ইনস্টল করা আপডেট সরানো হয়েছে। মূল ফাইলটি আবার খুলুন।');
+}
+
+function editTx(id){let t=data.tx.find(x=>x.id===id);if(!t)return;showTab('transactions');for(let [k,v] of Object.entries({txId:t.id,txType:t.type,txAccount:t.account,txAmount:t.amount,txCategory:t.category,txDate:t.date,txNote:t.note}))document.getElementById(k).value=v;document.getElementById('txFormTitle').textContent='লেনদেন সম্পাদনা করুন';document.getElementById('txSave').textContent='Update করুন';document.getElementById('txCancel').classList.remove('hidden')}
+document.getElementById('txForm').addEventListener('submit',e=>{e.preventDefault();let id=document.getElementById('txId').value,old=data.tx.find(t=>t.id===id),file=document.getElementById('txReceipt').files[0];let finish=receipt=>{let obj={id:id||uid(),type:document.getElementById('txType').value,account:document.getElementById('txAccount').value,amount:Number(document.getElementById('txAmount').value),category:document.getElementById('txCategory').value,date:document.getElementById('txDate').value,note:document.getElementById('txNote').value,receipt:receipt!==undefined?receipt:(old?.receipt||''),created:old?.created||Date.now(),updated:Date.now()};queuePosting({kind:'transaction',action:'save',targetId:id||'',payload:obj,category:'transaction',title:(obj.type==='income'?'টাকা জমা':'টাকা খরচ'),amount:obj.amount,detail:`${obj.account} • ${obj.date} • ${obj.note||obj.category}`});resetTxForm();alert('Posting-এ Pending হিসেবে জমা হয়েছে। Approve করলে ব্যালেন্স আপডেট হবে।')};if(file){if(file.size>1000000){alert('রসিদের ছবি ১ MB-এর কম রাখুন।');return}let r=new FileReader();r.onload=()=>finish(r.result);r.readAsDataURL(file)}else finish(undefined)});
+function resetDebtForm(){document.getElementById('debtForm').reset();document.getElementById('debtId').value='';document.getElementById('debtDate').value=today();document.getElementById('debtFormTitle').textContent='দেনা-পাওনা যোগ করুন';document.getElementById('debtCancel').classList.add('hidden')}
+function editDebt(id){let d=data.debts.find(x=>x.id===id);if(!d)return;showTab('debts');Object.entries({debtId:d.id,debtPerson:d.person,debtType:d.type,debtAmount:d.amount,debtDate:d.date,debtNote:d.note}).forEach(([k,v])=>document.getElementById(k).value=v);document.getElementById('debtFormTitle').textContent='দেনা-পাওনা সম্পাদনা';document.getElementById('debtCancel').classList.remove('hidden')}
+document.getElementById('debtForm').addEventListener('submit',e=>{e.preventDefault();let id=debtId.value,old=data.debts.find(d=>d.id===id),obj={id:id||uid(),person:debtPerson.value,type:debtType.value,amount:Number(debtAmount.value),paid:old?.paid||0,date:debtDate.value,note:debtNote.value};queuePosting({kind:'debt',action:'save',targetId:id||'',payload:obj,category:'debt',title:obj.type==='given'?'পাওনা যোগ':'দেনা যোগ',amount:obj.amount,detail:`${obj.person} • ${obj.date} • ${obj.note||''}`});resetDebtForm();alert('দেনা-পাওনার তথ্য Posting-এ Pending হয়েছে। Approve করলে মূল হিসাবে যুক্ত হবে।')});
+function repay(id){let d=data.debts.find(x=>x.id===id),v=prompt('কত টাকা পরিশোধ হয়েছে? বাকি '+money(d.amount-d.paid));if(v===null)return;let n=Number(v);if(!Number.isFinite(n)||n<=0||n>d.amount-d.paid){alert('সঠিক পরিমাণ লিখুন।');return}queuePosting({kind:'debt',action:'repay',targetId:id,payload:{amount:n},category:'debt',title:'দেনা-পাওনা পরিশোধ',amount:n,detail:d.person+' • '+money(n)});alert('পরিশোধের তথ্য Pending হয়েছে। Approve করলে বাকি টাকা সমন্বয় হবে।')}
+function durationLabel(v){if(!v)return 'মেয়াদ নির্ধারিত নয়';if(v==='18m')return '১ বছর ৬ মাস';return v.endsWith('m')?v.slice(0,-1)+' মাস':v.slice(0,-1)+' বছর'}
+function durationMonths(v){if(!v)return 0;if(v==='18m')return 18;return v.endsWith('m')?Number(v.slice(0,-1)):Number(v.slice(0,-1))*12}
+function showSavingView(view){const ids={savingSetup:'savingSetupPanel',dpsSetup:'dpsSetupPanel',dpsPosting:'dpsPostingPanel',dpsList:'dpsListPanel',dpsLedger:'dpsLedgerPanel'};Object.values(ids).forEach(id=>document.getElementById(id).classList.add('hidden'));document.getElementById(ids[view]||ids.dpsSetup).classList.remove('hidden');document.querySelectorAll('[data-saving-view]').forEach(b=>b.classList.toggle('active',b.dataset.savingView===view));if(view==='dpsLedger')renderDpsLedger();if(view==='dpsList')renderSavingsUI()}
+function dpsItems(){return data.savings.filter(s=>s.type!=='saving')}
+function savingItems(){return data.savings.filter(s=>s.type==='saving')}
+function estimateDps(s){let months=durationMonths(s.duration),weekly=s.frequency==='weekly',n=weekly?Math.max(1,Math.round(months*52/12)):Math.max(1,months),rate=Number(s.rate||0),inst=Number(s.installment||0),total=n*inst,profit=0;for(let i=0;i<n;i++){let remainingYears=(months/12)*(n-i)/n;profit+=inst*(rate/100)*remainingYears}return {n,total,profit,maturity:total+profit}}
+function renderSavingsUI(){
+ const savings=savingItems(),dps=dpsItems();
+ document.getElementById('savingList').innerHTML=savings.map(s=>`<div class="tx"><div><strong>${esc(s.name)}</strong><small>${durationLabel(s.duration)} • ${s.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'} • প্রতি জমা ${money(s.installment)}</small><small>মোট জমা: ${money(s.paid||0)}</small><div class="actions no-print"><button class="btn secondary small" onclick="editSaving('${s.id}')">Edit</button><button class="btn danger small" onclick="softDelete('savings','${s.id}')">Delete</button></div></div></div>`).join('')||'<div class="empty">এখনো কোনো সঞ্চয় সেট করা হয়নি।</div>';
+ document.getElementById('dpsList').innerHTML=dps.map(s=>{let e=estimateDps(s);return `<div class="tx"><div style="min-width:0"><strong>${esc(s.name)}</strong><small>${durationLabel(s.duration)} • ${s.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'} • প্রতি কিস্তি ${money(s.installment)}</small><small>বার্ষিক লাভ ${Number(s.rate||0)}% • অ্যাকাউন্ট: ${esc(s.account||'Cash')}</small><small>জমা হয়েছে ${money(s.paid||0)} • ${((s.posts||[]).length)}টি Posting</small><small>সম্ভাব্য মোট জমা ${money(e.total)} • আনুমানিক লাভ ${money(e.profit)}</small><div class="actions no-print"><button class="btn secondary small" onclick="editDps('${s.id}')">Edit</button><button class="btn secondary small" onclick="openDpsLedger('${s.id}')">কিস্তির হিসাব</button><button class="btn danger small" onclick="softDelete('savings','${s.id}')">Delete</button></div></div></div>`}).join('')||'<div class="empty">এখনো কোনো DPS সেট করা হয়নি।</div>';
+ const select=document.getElementById('savingPostSelect'),prev=select.value;select.innerHTML='<option value="">DPS সিলেক্ট করুন</option>'+dps.map(s=>`<option value="${s.id}">${esc(s.name)} — ${money(s.installment||0)}</option>`).join('');if(dps.some(s=>s.id===prev))select.value=prev;
+ const ledger=document.getElementById('dpsLedgerSelect'),oldLedger=ledger.value;ledger.innerHTML='<option value="">DPS সিলেক্ট করুন</option>'+dps.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');if(dps.some(s=>s.id===oldLedger))ledger.value=oldLedger;
+ document.getElementById('savingPostList').innerHTML=dps.flatMap(s=>(s.posts||[]).map(p=>({s,p}))).sort((a,b)=>String(b.p.date).localeCompare(String(a.p.date))).map(({s,p})=>`<div class="tx"><div><strong>${esc(s.name)} — ${money(p.amount)}</strong><small>${esc(p.date)} • ${esc(p.account||s.account||'Cash')} • ${p.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'} Posting</small></div><button class="btn danger small no-print" onclick="deleteSavingPost('${s.id}','${p.id}')">Delete</button></div>`).join('')||'<div class="empty">এখনো কোনো DPS Posting দেওয়া হয়নি।</div>';
+ updateDpsPostingAccountInfo();
+}
+function resetSavingForm(){document.getElementById('savingForm').reset();document.getElementById('savingId').value='';document.getElementById('savingFormTitle').textContent='নতুন সঞ্চয় সেট করুন';document.getElementById('savingCancel').classList.add('hidden')}
+function editSaving(id){let s=data.savings.find(x=>x.id===id);if(!s)return;showTab('savings');showSavingView('savingSetup');Object.entries({savingId:s.id,savingName:s.name,savingDuration:s.duration||'',savingFrequency:s.frequency||'monthly',savingInstallment:s.installment||''}).forEach(([k,v])=>document.getElementById(k).value=v);document.getElementById('savingFormTitle').textContent='সঞ্চয়ের সেটিংস সম্পাদনা';document.getElementById('savingCancel').classList.remove('hidden')}
+document.getElementById('savingForm').addEventListener('submit',e=>{e.preventDefault();let id=document.getElementById('savingId').value,old=data.savings.find(s=>s.id===id),obj={id:id||uid(),type:'saving',name:document.getElementById('savingName').value.trim(),duration:document.getElementById('savingDuration').value,frequency:document.getElementById('savingFrequency').value,installment:Number(document.getElementById('savingInstallment').value),paid:old?.paid||0,posts:old?.posts||[]};queuePosting({kind:'saving',action:'save',targetId:id||'',payload:obj,category:'saving',title:'সঞ্চয় সেটআপ',amount:obj.installment,detail:`${obj.name} • ${durationLabel(obj.duration)} • ${obj.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'}`});resetSavingForm();alert('সঞ্চয়ের সেটআপ Posting-এ Pending হয়েছে। Approve করলে তালিকায় যুক্ত হবে।')});
+function resetDpsForm(){document.getElementById('dpsForm').reset();document.getElementById('dpsId').value='';document.getElementById('dpsFormTitle').textContent='নতুন DPS সেট করুন';document.getElementById('dpsCancel').classList.add('hidden')}
+function editDps(id){let s=data.savings.find(x=>x.id===id);if(!s)return;showTab('savings');showSavingView('dpsSetup');Object.entries({dpsId:s.id,dpsName:s.name,dpsDuration:s.duration||'',dpsFrequency:s.frequency||'monthly',dpsInstallment:s.installment||'',dpsRate:Number(s.rate||0),dpsAccount:s.account||'Cash'}).forEach(([k,v])=>document.getElementById(k).value=v);document.getElementById('dpsFormTitle').textContent='DPS সেটিংস সম্পাদনা';document.getElementById('dpsCancel').classList.remove('hidden')}
+document.getElementById('dpsForm').addEventListener('submit',e=>{e.preventDefault();let id=document.getElementById('dpsId').value,old=data.savings.find(s=>s.id===id),obj={id:id||uid(),type:'dps',name:document.getElementById('dpsName').value.trim(),duration:document.getElementById('dpsDuration').value,frequency:document.getElementById('dpsFrequency').value,installment:Number(document.getElementById('dpsInstallment').value),rate:Number(document.getElementById('dpsRate').value),account:document.getElementById('dpsAccount').value,startDate:old?.startDate||today(),paid:old?.paid||0,posts:old?.posts||[]};if(!obj.name||!obj.duration||obj.installment<=0||obj.rate<0||!obj.account){alert('সব তথ্য সঠিকভাবে পূরণ করুন।');return}queuePosting({kind:'saving',action:'save',targetId:id||'',payload:obj,category:'saving',title:'DPS সেটআপ',amount:obj.installment,detail:`${obj.name} • ${durationLabel(obj.duration)} • ${obj.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'} • ${obj.rate}% বার্ষিক • ${obj.account}`});resetDpsForm();alert('DPS সেটআপ Posting-এ Pending হয়েছে। Approve করলে DPS তালিকায় যুক্ত হবে।')});
+function updateDpsPostingAccountInfo(){let s=data.savings.find(x=>x.id===document.getElementById('savingPostSelect').value&&x.type!=='saving'),box=document.getElementById('dpsPostingAccountInfo');if(box)box.textContent=s?`নির্ধারিত অ্যাকাউন্ট: ${s.account||'Cash'} • নিয়ম: ${s.frequency==='weekly'?'সাপ্তাহিক':'মাসিক'} • প্রতি কিস্তি: ${money(s.installment)}`:'DPS নির্বাচন করলে নির্ধারিত অ্যাকাউন্ট এখানে দেখা যাবে।'}
+document.getElementById('savingPostSelect').addEventListener('change',e=>{let s=data.savings.find(x=>x.id===e.target.value&&x.type!=='saving');document.getElementById('savingPostAmount').value=s?.installment||'';updateDpsPostingAccountInfo()});
+document.getElementById('savingPostForm').addEventListener('submit',e=>{e.preventDefault();let s=data.savings.find(x=>x.id===document.getElementById('savingPostSelect').value&&x.type!=='saving');if(!s){alert('আগে একটি Approved DPS সিলেক্ট করুন।');return}let amount=Number(document.getElementById('savingPostAmount').value);if(!Number.isFinite(amount)||amount<=0){alert('সঠিক জমার পরিমাণ দিন।');return}let date=document.getElementById('savingPostDate').value,account=s.account||'Cash';queuePosting({kind:'saving',action:'post',targetId:s.id,payload:{id:uid(),amount,date,account,frequency:s.frequency},category:'saving',title:'DPS কিস্তি জমা',amount,detail:`${s.name} • ${account} • ${date}`});document.getElementById('savingPostSelect').value='';document.getElementById('savingPostAmount').value='';updateDpsPostingAccountInfo();alert('DPS কিস্তি Pending হয়েছে। Approve করলে নির্ধারিত অ্যাকাউন্ট থেকে টাকা কাটা হবে।')});
+function openDpsLedger(id){showTab('savings');showSavingView('dpsLedger');document.getElementById('dpsLedgerSelect').value=id;renderDpsLedger()}
+document.getElementById('dpsLedgerSelect').addEventListener('change',renderDpsLedger);
+function renderDpsLedger(){let id=document.getElementById('dpsLedgerSelect')?.value,s=data.savings.find(x=>x.id===id&&x.type!=='saving'),summary=document.getElementById('dpsLedgerSummary'),table=document.getElementById('dpsLedgerTable');if(!s){summary.innerHTML='';table.innerHTML='<div class="empty">হিসাব দেখতে একটি DPS নির্বাচন করুন।</div>';return}let e=estimateDps(s),posts=[...(s.posts||[])].sort((a,b)=>String(a.date).localeCompare(String(b.date))),months=durationMonths(s.duration),count=e.n,start=new Date((s.startDate||today())+'T12:00:00'),rows=[];for(let i=0;i<count;i++){let due=new Date(start);if(s.frequency==='weekly')due.setDate(due.getDate()+i*7);else due.setMonth(due.getMonth()+i);let post=posts[i];rows.push({n:i+1,due:due.toISOString().slice(0,10),actual:post?.date||'',amount:post?.amount??s.installment,status:post?'জমা':'বাকি',account:post?.account||s.account||'Cash'})}posts.slice(count).forEach((post,j)=>rows.push({n:count+j+1,due:'—',actual:post.date,amount:post.amount,status:'অতিরিক্ত জমা',account:post.account||s.account||'Cash'}));summary.innerHTML=`<div class="dps-summary"><div class="dps-kpi"><small>মোট নির্ধারিত কিস্তি</small><b>${count.toLocaleString('bn-BD')}</b></div><div class="dps-kpi"><small>পরিশোধিত কিস্তি</small><b>${posts.length.toLocaleString('bn-BD')}</b></div><div class="dps-kpi"><small>মোট জমা</small><b>${money(s.paid||0)}</b></div><div class="dps-kpi"><small>বাকি কিস্তি</small><b>${Math.max(0,count-posts.length).toLocaleString('bn-BD')}</b></div><div class="dps-kpi"><small>সম্ভাব্য লাভ (আনুমানিক)</small><b>${money(e.profit)}</b></div><div class="dps-kpi"><small>সম্ভাব্য মোট</small><b>${money(e.maturity)}</b></div></div>`;table.innerHTML=`<div class="dps-table-wrap"><table class="dps-table"><thead><tr><th>কিস্তি</th><th>নির্ধারিত তারিখ</th><th>Posting তারিখ</th><th>জমা (৳)</th><th>অ্যাকাউন্ট</th><th>অবস্থা</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.n.toLocaleString('bn-BD')}</td><td>${r.due==='—'?'—':esc(r.due)}</td><td>${r.actual?esc(r.actual):'—'}</td><td>${money(r.amount)}</td><td>${esc(r.account)}</td><td>${r.status==='জমা'?'<span class="income">জমা</span>':r.status==='বাকি'?'<span style="color:#ffbf69">বাকি</span>':'অতিরিক্ত'}</td></tr>`).join('')}</tbody></table></div>`}
+function exportDpsLedgerCSV(){let id=document.getElementById('dpsLedgerSelect').value,s=data.savings.find(x=>x.id===id&&x.type!=='saving');if(!s){alert('আগে DPS নির্বাচন করুন।');return}let e=estimateDps(s),posts=[...(s.posts||[])].sort((a,b)=>String(a.date).localeCompare(String(b.date))),rows=[['কিস্তি','Posting তারিখ','টাকা','অ্যাকাউন্ট','অবস্থা']];posts.forEach((p,i)=>rows.push([i+1,p.date,p.amount,p.account||s.account,'জমা']));let csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='PIZZLING-DPS-'+s.name.replace(/[^\w\u0980-\u09FF-]/g,'_')+'.csv';a.click();URL.revokeObjectURL(url)}
+function deleteSavingPost(sid,pid){let s=data.savings.find(x=>x.id===sid),p=s?.posts?.find(x=>x.id===pid);if(!p)return;if(!confirm('এই Posting মুছে ফেলার অনুরোধ Pending-এ পাঠাবেন? Approve করলে সংশোধন হবে।'))return;queuePosting({kind:'saving',action:'deletePost',targetId:sid,payload:{postId:pid},category:'saving',title:'DPS Posting মুছুন',amount:p.amount,detail:s.name+' • '+p.date})}
+function softDelete(type,id){if(!confirm('এই তথ্য মুছে ফেলার অনুরোধ Posting-এ পাঠাবেন? Approve করলে Trash-এ যাবে।'))return;let obj=data[type].find(x=>x.id===id);if(!obj)return;let category=type==='tx'?'transaction':type==='debts'?'debt':'saving';queuePosting({kind:'delete',action:'delete',targetId:id,payload:{collection:type},category,title:'তথ্য মুছে ফেলার অনুরোধ',amount:obj.amount||0,detail:obj.note||obj.person||obj.name||'সংরক্ষিত তথ্য'})}
+function restoreItem(i){let t=data.trash[i];if(!t)return;data[t.type].push(t.item);data.trash.splice(i,1);persist()}
+function permanentDelete(i){if(!confirm('চিরতরে মুছে ফেলবেন? আর Restore করা যাবে না।'))return;data.trash.splice(i,1);persist()}
+function queuePosting(item){data.pending=data.pending||[];data.pending.unshift({id:uid(),status:'pending',createdAt:Date.now(),...item});persist()}
+function postingCategoryName(c){return c==='transaction'?'জমা / খরচ':c==='debt'?'দেনা-পাওনা':'সঞ্চয় / DPS'}
+let postingCategoryFilter='all',postingStatusFilter='pending';
+function setPostingCategory(v){postingCategoryFilter=v;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===v));renderPosting()}
+function setPostingStatus(v){postingStatusFilter=v;document.querySelectorAll('[data-status]').forEach(b=>b.classList.toggle('active',b.dataset.status===v));renderPosting()}
+function postingFilterType(x){if(x.category==='saving')return 'saving';if(x.category==='debt')return x.payload?.type==='given'?'receivable':'debt';if(x.category==='transaction')return x.payload?.type==='income'?'income':'expense';return x.category||'all'}
+function postingCategoryName(c){return ({income:'জমা',expense:'খরচ',debt:'দেনা',receivable:'পাওনা',saving:'DPS / সঞ্চয়',transaction:'জমা / খরচ'})[c]||'অন্যান্য'}
+function renderPosting(){let status=postingStatusFilter,cat=postingCategoryFilter;let all=[...(data.pending||[]),...(data.postingHistory||[])];let filtered=all.filter(x=>(status==='all'||x.status===status)&&(cat==='all'||postingFilterType(x)===cat)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));let pending=(data.pending||[]).filter(x=>x.status==='pending').length;document.getElementById('postingListTitle').textContent=status==='pending'?'Pending তালিকা':status==='approved'?'Approved তালিকা':status==='rejected'?'Rejected তালিকা':'সব Posting';document.getElementById('postingList').innerHTML=filtered.map(x=>`<div class="posting-item"><div class="posting-item-top"><div><div class="posting-item-title">${esc(x.title)}</div><div class="posting-meta">${postingCategoryName(postingFilterType(x))} • ${new Date(x.createdAt).toLocaleString('bn-BD')}</div><div class="posting-meta">${esc(x.detail||'')}</div></div><div class="posting-amount">${money(x.amount||0)}</div></div><div class="actions"><span class="pill">${x.status==='pending'?'Pending':x.status==='approved'?'Approved':'Rejected'}</span>${x.status==='pending'?`<button class="btn secondary small" onclick="reviewPosting('${x.id}')">Review</button><button class="btn green small" onclick="approvePosting('${x.id}')">Approve</button><button class="btn danger small" onclick="rejectPosting('${x.id}')">Reject</button>`:''}${x.status==='rejected'&&x.reason?`<small class="posting-meta">কারণ: ${esc(x.reason)}</small>`:''}</div></div>`).join('')||'<div class="posting-empty">এই বিভাগে কোনো কাজ নেই।</div>';document.getElementById('pendingTotal').textContent=pending.toLocaleString('bn-BD');document.getElementById('pendingStat').textContent=pending.toLocaleString('bn-BD');document.getElementById('approvedTotal').textContent=(data.postingHistory||[]).filter(x=>x.status==='approved').length.toLocaleString('bn-BD');let navPendingCount=document.getElementById('pendingCount');if(navPendingCount)navPendingCount.textContent=pending.toLocaleString('bn-BD');let heroCount=document.getElementById('pendingHeroCount');if(heroCount)heroCount.textContent=pending.toLocaleString('bn-BD')}
+function reviewPosting(id){let x=data.pending.find(p=>p.id===id);if(!x)return;alert(`Review করুন:\nবিভাগ: ${postingCategoryName(x.category)}\nকাজ: ${x.title}\nপরিমাণ: ${money(x.amount)}\nবিস্তারিত: ${x.detail||''}\n\nসঠিক হলে Approve, ভুল হলে Reject চাপুন।`)}
+function approvePosting(id){let x=data.pending.find(p=>p.id===id);if(!x||x.status!=='pending')return;if(!confirm('তথ্য যাচাই করেছেন? Approve করলে মূল হিসাব ও Dashboard আপডেট হবে।'))return;try{if(x.kind==='transaction'&&x.action==='save'){let old=data.tx.find(t=>t.id===x.targetId);if(old)data.tx=data.tx.map(t=>t.id===x.targetId?x.payload:t);else data.tx.push(x.payload)}else if(x.kind==='debt'&&x.action==='save'){let old=data.debts.find(d=>d.id===x.targetId);if(old)data.debts=data.debts.map(d=>d.id===x.targetId?x.payload:d);else data.debts.push(x.payload)}else if(x.kind==='debt'&&x.action==='repay'){let d=data.debts.find(d=>d.id===x.targetId);if(!d)throw Error('দেনা-পাওনার রেকর্ড পাওয়া যায়নি');if(x.payload.amount>d.amount-d.paid)throw Error('পরিশোধের পরিমাণ বাকি টাকার চেয়ে বেশি');d.paid+=x.payload.amount}else if(x.kind==='saving'&&x.action==='save'){let old=data.savings.find(s=>s.id===x.targetId);if(old)data.savings=data.savings.map(s=>s.id===x.targetId?{...old,...x.payload,posts:x.payload.posts||old.posts||[],paid:x.payload.paid??old.paid??0}:s);else data.savings.push(x.payload)}else if(x.kind==='saving'&&x.action==='post'){let s=data.savings.find(s=>s.id===x.targetId);if(!s)throw Error('DPS পাওয়া যায়নি');let p=x.payload;s.posts=s.posts||[];s.posts.push(p);s.paid=(s.paid||0)+p.amount;data.tx.push({id:uid(),type:'expense',account:p.account,amount:p.amount,category:'Savings',date:p.date,note:'DPS Posting: '+s.name,created:Date.now(),updated:Date.now(),savingId:s.id,postId:p.id})}else if(x.kind==='saving'&&x.action==='deletePost'){let s=data.savings.find(s=>s.id===x.targetId),p=s?.posts?.find(p=>p.id===x.payload.postId);if(!s||!p)throw Error('DPS Posting পাওয়া যায়নি');s.paid=Math.max(0,(s.paid||0)-p.amount);s.posts=s.posts.filter(p=>p.id!==x.payload.postId);data.tx=data.tx.filter(t=>t.postId!==x.payload.postId)}else if(x.kind==='delete'&&x.action==='delete'){let arr=data[x.payload.collection],obj=arr.find(v=>v.id===x.targetId);if(obj){data.trash.push({type:x.payload.collection,item:obj,deletedAt:new Date().toISOString()});data[x.payload.collection]=arr.filter(v=>v.id!==x.targetId)}}x.status='approved';x.reviewedAt=Date.now();data.pending=data.pending.filter(p=>p.id!==id);data.postingHistory.unshift(x);persist();renderPosting();alert('Approved হয়েছে। মূল হিসাব আপডেট হয়েছে।')}catch(err){alert('Approve করা যায়নি: '+err.message)}}
+function rejectPosting(id){let x=data.pending.find(p=>p.id===id);if(!x)return;let reason=prompt('Reject করার কারণ লিখুন (ঐচ্ছিক):','');if(reason===null)return;x.status='rejected';x.reason=reason;x.reviewedAt=Date.now();data.pending=data.pending.filter(p=>p.id!==id);data.postingHistory.unshift(x);persist();renderPosting();alert('কাজটি Reject করা হয়েছে। মূল ব্যালেন্সে কোনো পরিবর্তন হয়নি।')}
+function renderReports(){let inc=data.tx.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0),out=data.tx.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0),bal=Object.values(balances()).reduce((s,n)=>s+Math.max(0,n),0);document.getElementById('reportSummary').innerHTML=`<div class="tx"><span>মোট জমা</span><b class="income">${money(inc)}</b></div><div class="tx"><span>মোট খরচ</span><b class="expense">${money(out)}</b></div><div class="tx"><span>নিট আয়-ব্যয়</span><b>${money(inc-out)}</b></div><div class="tx"><span>বর্তমান ব্যালেন্স</span><b>${money(bal)}</b></div>`;document.getElementById('trashList').innerHTML=data.trash.map((t,i)=>`<div class="tx"><div><strong>${esc(t.item.note||t.item.person||t.item.name||'সংরক্ষিত তথ্য')}</strong><small>${esc(t.type)} • ${new Date(t.deletedAt).toLocaleDateString('bn-BD')}</small><div class="actions"><button class="btn green small" onclick="restoreItem(${i})">Restore</button><button class="btn danger small" onclick="permanentDelete(${i})">চিরতরে মুছুন</button></div></div></div>`).join('')||'<div class="empty">Trash খালি।</div>'}
+document.getElementById('txSearch').addEventListener('input',e=>{let q=e.target.value.toLowerCase();document.getElementById('txList').innerHTML=[...data.tx].filter(t=>[t.note,t.account,t.category,t.date].join(' ').toLowerCase().includes(q)).sort((a,b)=>b.date.localeCompare(a.date)).map(txHtml).join('')||'<div class="empty">কিছু পাওয়া যায়নি।</div>'});
+function saveName(){data.name=document.getElementById('userName').value.trim()||'PIZZLING';persist();alert('নাম সংরক্ষণ হয়েছে।')}
+function saveProfilePhoto(){let file=document.getElementById('profilePhotoInput').files[0];if(!file){alert('আগে একটি ছবি নির্বাচন করুন।');return}if(!file.type.startsWith('image/')){alert('শুধু ছবির ফাইল নির্বাচন করুন।');return}if(file.size>1500000){alert('ছবিটি ১.৫ MB-এর কম রাখুন।');return}let reader=new FileReader();reader.onload=()=>{data.profilePhoto=reader.result;persist();document.getElementById('profilePhotoInput').value='';alert('প্রোফাইল ছবি পরিবর্তন হয়েছে।')};reader.readAsDataURL(file)}
+function removeProfilePhoto(){if(!data.profilePhoto){alert('কোনো প্রোফাইল ছবি দেওয়া নেই।');return}if(confirm('প্রোফাইল ছবি সরিয়ে দেবেন?')){delete data.profilePhoto;persist();document.getElementById('profilePhotoInput').value='';alert('প্রোফাইল ছবি সরানো হয়েছে।')}}
+document.getElementById('changePinForm').addEventListener('submit',e=>{e.preventDefault();if(digest('PIZZLING:'+oldPin.value)!==pinHash){alert('বর্তমান PIN সঠিক নয়।');return}if(!/^[0-9]{4,6}$/.test(newPin.value)){alert('নতুন PIN ৪–৬ সংখ্যার হতে হবে।');return}pinHash=digest('PIZZLING:'+newPin.value);localStorage.setItem(PINKEY,pinHash);e.target.reset();alert('PIN পরিবর্তন হয়েছে।')});
+function download(content,name,type){let a=document.createElement('a'),u=URL.createObjectURL(new Blob([content],{type}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
+function backup(){download(JSON.stringify({data,pinHash},null,2),'pizzling-backup.json','application/json')}
+function exportCSV(){let rows=[['Date','Type','Account','Amount','Category','Note'],...data.tx.map(t=>[t.date,t.type,t.account,t.amount,t.category,t.note])];download('\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n'),'pizzling-transactions.csv','text/csv;charset=utf-8')}
+function restoreBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let p=JSON.parse(r.result),d=p.data||p;if(!Array.isArray(d.tx)||!Array.isArray(d.debts)||!Array.isArray(d.savings)||!Array.isArray(d.trash))throw Error();if(!confirm('বর্তমান ডেটার বদলে ব্যাকআপের ডেটা Restore করবেন?'))return;data={...emptyData(),...d,pending:d.pending||[],postingHistory:d.postingHistory||[]};persist();if(p.pinHash){pinHash=p.pinHash;localStorage.setItem(PINKEY,pinHash)}alert('ব্যাকআপ Restore হয়েছে।')}catch(err){alert('সঠিক PIZZLING ব্যাকআপ ফাইল নয়।')}};r.readAsText(f);e.target.value=''}
+function clearAll(){if(!confirm('সব লেনদেন, দেনা-পাওনা, সঞ্চয় ও Trash চিরতরে মুছবেন?'))return;data=emptyData();localStorage.removeItem(KEY);persist()}
+document.getElementById('savingPostDate').value=today();document.getElementById('txDate').value=today();document.getElementById('debtDate').value=today();document.getElementById('savingPostDate').value=today();setupLock();render();
+</script>
+</body></html>
